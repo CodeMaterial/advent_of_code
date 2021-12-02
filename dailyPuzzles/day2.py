@@ -15,19 +15,16 @@ class Position:
 
 
 if __name__ == "__main__":
+
     commands = helpers.clean_input_data("../data/day2.txt")
+
+    directionMap = {"forward": Position(1, 0), "backward": Position(-1, 0), "up": Position(0, -1), "down": Position(0, 1)}
 
     sub_position = Position(0, 0)
 
-    directions = {"forward": Position(1, 0), "backward": Position(-1, 0), "up": Position(0, -1), "down": Position(0, 1)}
-
     for command in commands:
-
-        direction = command.split(" ")[0]
-        distance = int(command.split(" ")[1])
-
-        if direction in directions:
-            sub_position += directions[direction] * distance
+        direction, distance = command.split(" ")
+        sub_position += directionMap[direction] * int(distance)
 
     print("sub horizontal position: ", sub_position.x)
     print("sub depth: ", sub_position.y)
