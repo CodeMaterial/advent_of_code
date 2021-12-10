@@ -10,7 +10,7 @@ def clean_input_data(filepath):
 
     with open(filepath, 'r') as data:
         for line in data:
-            clean_line = line.strip()
+            clean_line = line.strip().replace("  ", " ")
             if clean_line != "":
                 output_array.append(clean_line)
 
