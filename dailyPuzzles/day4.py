@@ -7,12 +7,19 @@ class Grid:
         self.grid_size = size
         self.grid_nums = []
         self.nums_drawn = []
+        self.last_drawn = None
 
         for row in range(self.grid_size):
             self.grid_nums.append([int(a) for a in grid_data[row].split(" ")])
+        self.reset()
+
+    def reset(self):
+        self.nums_drawn = []
+        for row in range(self.grid_size):
             self.nums_drawn.append([False for _ in range(self.grid_size)])
 
     def draw(self, value):
+        self.last_drawn = value
         for row in range(self.grid_size):
             for column in range(self.grid_size):
                 if self.grid_nums[row][column] == value:
@@ -37,6 +44,23 @@ class Grid:
         return score
 
 
+def find_winner(grids, numbers):
+
+    for number in numbers:
+        for grid in grids:
+            grid.draw(number)
+            if grid.has_won():
+                return grid
+
+
+def find_looser(grids, numbers):
+    for number in numbers:
+        for grid in grids:
+            grid.draw(number)
+            if sum([g.has_won() for g in grids]) == len(grids):
+                return grid
+
+
 if __name__ == "__main__":
 
     data = helpers.clean_input_data("../data/day4.txt")
@@ -46,16 +70,18 @@ if __name__ == "__main__":
 
     grid_size = 5
 
-    grids = []
+    bingo_grids = []
 
     for i in range(0, len(grid_data_raw), grid_size):
         grid = Grid(grid_data_raw[i:], grid_size)
-        grids.append(grid)
+        bingo_grids.append(grid)
 
-    for number in number_call:
-        for grid_id, grid in enumerate(grids):
-            grid.draw(number)
-            if grid.has_won():
-                print("won:", grid_id, grid.score())
-                print("puzzle input:", grid.score() * number)
-                quit()
+    winning_grid = find_winner(bingo_grids, number_call)
+
+    print("part 1 puzzle input: ", winning_grid.score() * winning_grid.last_drawn)
+
+    [g.reset() for g in bingo_grids]
+
+    loosing_grid = find_looser(bingo_grids, number_call)
+
+    print("part 2 puzzle input: ", loosing_grid.score() * loosing_grid.last_drawn)
