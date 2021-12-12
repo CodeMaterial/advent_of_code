@@ -1,4 +1,5 @@
 import lib.helpers as helpers
+from itertools import product
 
 
 class Grid:
@@ -11,19 +12,18 @@ class Grid:
 
         for row in range(self.grid_size):
             self.grid_nums.append([int(a) for a in grid_data[row].split(" ")])
-        self.reset()
+            self.nums_drawn.append([False for _ in range(grid_size)])
+
 
     def reset(self):
-        self.nums_drawn = []
-        for row in range(self.grid_size):
-            self.nums_drawn.append([False for _ in range(self.grid_size)])
+        for row, col in product(range(grid_size), range(grid_size)):
+            self.nums_drawn[row][col] = False
 
     def draw(self, value):
         self.last_drawn = value
-        for row in range(self.grid_size):
-            for column in range(self.grid_size):
-                if self.grid_nums[row][column] == value:
-                    self.nums_drawn[row][column] = True
+        for row, col in product(range(grid_size), range(grid_size)):
+            if self.grid_nums[row][col] == value:
+                self.nums_drawn[row][col] = True
 
     def has_won(self):
         grid_drawn_transposed = list(zip(*self.nums_drawn))
@@ -38,9 +38,8 @@ class Grid:
 
     def score(self):
         score = 0
-        for row in range(self.grid_size):
-            for column in range(self.grid_size):
-                score += self.grid_nums[row][column] * (not self.nums_drawn[row][column])
+        for row, column in product(range(grid_size), range(grid_size)):
+            score += self.grid_nums[row][column] * (not self.nums_drawn[row][column])
         return score
 
 
